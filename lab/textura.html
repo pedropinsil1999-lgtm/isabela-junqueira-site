@@ -1,0 +1,8 @@
+<!doctype html><meta charset="utf-8">
+<style>html,body{margin:0;height:100%;background:#0D1A14}canvas{display:block;width:100vw;height:100vh}</style>
+<canvas id="c"></canvas>
+<script type="module">
+import { criarLuzDaAgua } from './luz-da-agua.js';
+const i = criarLuzDaAgua(document.getElementById('c'), { forca: 0.34, escalaRender: 1 });
+window.__pronto = () => i.modo;
+</script>

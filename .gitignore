@@ -1,0 +1,26 @@
+# dependências e build
+node_modules/
+site/.next/
+site/out/
+site/next-env.d.ts
+*.tsbuildinfo
+
+# ambiente
+.env
+.env.local
+.env*.local
+
+# acervo de trabalho: material bruto do Instagram, contact sheets, screenshots
+# de revisão e provas. É pesado (dezenas de MB) e é insumo, não entrega.
+# As fotos que o site usa estão versionadas em site/public/fotos/.
+entrada/
+
+# fontes em TTF servem só para gerar a marca; o site usa os .woff2 em
+# site/public/fontes/
+fontes/*.ttf
+fontes/*.css
+
+# sistema
+.DS_Store
+Thumbs.db
+*.log

@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------
+   Fontes — self-hosted, variáveis, swap.
+   Gambetta nos títulos: serifa contrastada, de eixo humanista, com itálico
+   caligráfico de verdade — é o itálico que carrega a ênfase no site inteiro.
+   General Sans na interface: grotesca humanista, quente sem ser informal.
+   --------------------------------------------------------------- */
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fontes/GambettaVar.woff2') format('woff2');
+  font-weight: 300 700; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Gambetta';
+  src: url('/fontes/GambettaVar-Italic.woff2') format('woff2');
+  font-weight: 300 700; font-style: italic; font-display: swap;
+}
+@font-face {
+  font-family: 'General Sans';
+  src: url('/fontes/GeneralSansVar.woff2') format('woff2');
+  font-weight: 200 700; font-style: normal; font-display: swap;
+}
+
+/* ---------------------------------------------------------------
+   Tokens — alto padrão tropical.
+   Hex conferidos contra a paleta amostrada do acervo (ver DECISOES.md).
+   --------------------------------------------------------------- */
+@theme {
+  --color-mata-950: #0D1A14;
+  --color-mata-900: #112118;
+  --color-mata-800: #16281F;
+  --color-mata-600: #2C4A38;
+  --color-agua-500: #2F8C85;
+  --color-agua-300: #6FC3BA;
+  /* madeira e pedra: hex trocados pelos valores amostrados do acervo
+     (k-means em 15 fotos de obra — ver DECISOES.md) */
+  --color-madeira-500: #A96836;   /* era #B0763F · 11% dos pixels */
+  --color-madeira-300: #DEA96A;   /* era #D9A871 ·  7% dos pixels */
+  --color-pedra-400: #A2866A;     /* novo · 10% dos pixels */
+  --color-travertino-200: #E6DACA;
+  --color-areia-100: #F1EAE0;
+  --color-osso: #FAF7F2;
+  --color-tinta: #1C1611;         /* era #15120E · aquecido: o preto dela é #2A1D11 */
+
+  --font-serif: 'Gambetta', Georgia, 'Times New Roman', serif;
+  --font-sans: 'General Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* escala fluida */
+  --text-eyebrow: 0.6875rem;
+  --text-corpo: clamp(0.9375rem, 0.88rem + 0.28vw, 1.0625rem);
+  --text-corpo-lg: clamp(1.0625rem, 0.97rem + 0.42vw, 1.3125rem);
+  --text-t3: clamp(1.5rem, 1.2rem + 1.5vw, 2.5rem);
+  --text-t2: clamp(2rem, 1.3rem + 3.4vw, 4.5rem);
+  --text-t1: clamp(2.5rem, 1.2rem + 6.2vw, 6.5rem);
+  --text-display: clamp(3.25rem, 0.5rem + 10vw, 11rem);
+
+  /* raios — nada quadrado. O travertino e a madeira da obra dela não têm
+     canto vivo; a interface acompanha. */
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+
+  /* movimento */
+  --ease-entrada: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-suave: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* ---------------------------------------------------------------
+   Base
+   --------------------------------------------------------------- */
+* { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: auto; /* Lenis cuida do scroll */
+}
+
+body {
+  margin: 0;
+  background: var(--color-mata-950);
+  color: var(--color-travertino-200);
+  font-family: var(--font-sans);
+  font-size: var(--text-corpo);
+  font-weight: 400;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 0.96;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+em { font-style: italic; }
+
+::selection { background: var(--color-madeira-500); color: var(--color-osso); }
+
+/* foco visível em madeira, sempre */
+:focus-visible {
+  outline: 2px solid var(--color-madeira-300);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+@layer utilities {
+  .eyebrow {
+    font-size: var(--text-eyebrow);
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+  .borda-fina { border-color: color-mix(in srgb, var(--color-travertino-200) 25%, transparent); }
+  .secao-clara { background: var(--color-osso); color: var(--color-tinta); }
+  .secao-escura { background: var(--color-mata-950); color: var(--color-travertino-200); }
+
+  /* máscara de revelação por linha (SplitText) */
+  .linha-mascara { overflow: hidden; display: block; }
+}
+
+/* grain: textura sutil nas seções escuras */
+.grao::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23g)'/%3E%3C/svg%3E");
+}
+
+@keyframes descer {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+/* ---------------------------------------------------------------
+   Movimento reduzido: sem parallax, sem pin, sem shader animado
+   --------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.3s !important;
+    transition-duration: 0.3s !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Menu em tela cheia (mobile) — animação em CSS, sem biblioteca.
+   O header e o menu são os primeiros elementos interativos da página:
+   carregar GSAP só para eles atrasaria a primeira pintura.
+   --------------------------------------------------------------- */
+@keyframes ij-abrir-menu {
+  from { clip-path: inset(0 0 100% 0); }
+  to   { clip-path: inset(0 0 0% 0); }
+}
+@keyframes ij-subir-item {
+  from { transform: translateY(110%); }
+  to   { transform: translateY(0); }
+}
+[data-abrindo='sim'] {
+  animation: ij-abrir-menu 0.72s cubic-bezier(0.65, 0, 0.35, 1) both;
+}
+[data-abrindo='sim'] [data-menu-item] {
+  animation: ij-subir-item 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+[data-abrindo='sim'] [data-menu-item] { animation-delay: 0.22s; }
+[data-abrindo='sim'] li:nth-child(2)  [data-menu-item] { animation-delay: 0.27s; }
+[data-abrindo='sim'] li:nth-child(3)  [data-menu-item] { animation-delay: 0.32s; }
+[data-abrindo='sim'] li:nth-child(4)  [data-menu-item] { animation-delay: 0.37s; }
+[data-abrindo='sim'] li:nth-child(5)  [data-menu-item] { animation-delay: 0.42s; }
+[data-abrindo='sim'] li:nth-child(6)  [data-menu-item] { animation-delay: 0.47s; }
+[data-abrindo='sim'] li:nth-child(7)  [data-menu-item] { animation-delay: 0.52s; }
+[data-abrindo='sim'] li:nth-child(8)  [data-menu-item] { animation-delay: 0.57s; }
+
+@media (prefers-reduced-motion: reduce) {
+  [data-abrindo='sim'],
+  [data-abrindo='sim'] [data-menu-item] { animation: none; }
+}
+
+/* ---------------------------------------------------------------
+   Glow dos botões — substituiu o botão magnético.
+   A luz é a linguagem do site (cáusticas, lâmina de água, rasgo de luz
+   na pedra), então o feedback de hover acende em vez de deslocar.
+   --------------------------------------------------------------- */
+.ij-glow:hover,
+.ij-glow:focus-visible {
+  background: var(--color-madeira-300);
+  color: var(--color-tinta);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-madeira-300) 55%, transparent),
+    0 0 24px color-mix(in srgb, var(--color-madeira-300) 42%, transparent),
+    0 0 64px color-mix(in srgb, var(--color-madeira-500) 30%, transparent);
+}
+.ij-glow-leve:hover,
+.ij-glow-leve:focus-visible {
+  border-color: color-mix(in srgb, var(--color-madeira-300) 70%, transparent);
+  box-shadow:
+    0 0 20px color-mix(in srgb, var(--color-madeira-300) 24%, transparent),
+    inset 0 0 20px color-mix(in srgb, var(--color-madeira-300) 10%, transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ij-glow, .ij-glow-leve { transition: none; }
+}

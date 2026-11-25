@@ -1,0 +1,20 @@
+// Captura uma seção específica do site em execução.
+import { chromium } from 'playwright';
+import path from 'node:path';
+import { servir } from './servir.mjs';
+const RAIZ = path.resolve(process.cwd(), '..');
+const [, , seletor, saida, larg = '1440', alt = '900'] = process.argv;
+const srv = await servir(path.join(RAIZ, 'site', 'out'), 4404);
+const nav = await chromium.launch({ headless: true, args: ['--use-gl=angle', '--use-angle=swiftshader', '--enable-unsafe-swiftshader'] });
+const ctx = await nav.newContext({ viewport: { width: +larg, height: +alt } });
+ctx.setDefaultTimeout(120000);
+const page = await ctx.newPage();
+await page.goto('http://127.0.0.1:4404/', { waitUntil: 'networkidle' });
+await page.waitForTimeout(2800);
+await page.evaluate(() => document.querySelectorAll('canvas').forEach((c) => c.remove()));
+const el = page.locator(seletor).first();
+await el.scrollIntoViewIfNeeded();
+await page.waitForTimeout(1600);
+await el.screenshot({ path: path.join(RAIZ, 'entrada', 'provas', saida), timeout: 120000 });
+console.log('>', saida);
+await nav.close(); srv.close();

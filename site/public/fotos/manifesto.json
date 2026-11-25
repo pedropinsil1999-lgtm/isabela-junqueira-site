@@ -1,0 +1,92 @@
+[
+ {
+  "base": "ij-damha-iv-02",
+  "slug": "damha-iv",
+  "largura": 1800,
+  "altura": 2333,
+  "proporcao": 0.7715,
+  "tamanhos": [
+   480,
+   768,
+   1080,
+   1440,
+   1800
+  ],
+  "origem": "ij__damha-iv__02.jpg"
+ },
+ {
+  "base": "ij-damha-iv-03",
+  "slug": "damha-iv",
+  "largura": 1800,
+  "altura": 2333,
+  "proporcao": 0.7715,
+  "tamanhos": [
+   480,
+   768,
+   1080,
+   1440,
+   1800
+  ],
+  "origem": "ij__damha-iv__03.jpg"
+ },
+ {
+  "base": "ij-damha-iv-05",
+  "slug": "damha-iv",
+  "largura": 1800,
+  "altura": 2333,
+  "proporcao": 0.7715,
+  "tamanhos": [
+   480,
+   768,
+   1080,
+   1440,
+   1800
+  ],
+  "origem": "ij__damha-iv__05.jpg"
+ },
+ {
+  "base": "ij-damha-iv-06",
+  "slug": "damha-iv",
+  "largura": 1800,
+  "altura": 2333,
+  "proporcao": 0.7715,
+  "tamanhos": [
+   480,
+   768,
+   1080,
+   1440,
+   1800
+  ],
+  "origem": "ij__damha-iv__06.jpg"
+ },
+ {
+  "base": "ij-damha-iv-10",
+  "slug": "damha-iv",
+  "largura": 1800,
+  "altura": 2333,
+  "proporcao": 0.7715,
+  "tamanhos": [
+   480,
+   768,
+   1080,
+   1440,
+   1800
+  ],
+  "origem": "ij__damha-iv__10.jpg"
+ },
+ {
+  "base": "ij-damha-iv-12",
+  "slug": "damha-iv",
+  "largura": 1800,
+  "altura": 2333,
+  "proporcao": 0.7715,
+  "tamanhos": [
+   480,
+   768,
+   1080,
+   1440,
+   1800
+  ],
+  "origem": "ij__damha-iv__12.jpg"
+ }
+]
