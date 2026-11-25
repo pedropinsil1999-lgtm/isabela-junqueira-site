@@ -26,6 +26,19 @@ export function Hero() {
   const [extras, setExtras] = useState(false);
   const { abrir } = useBriefing();
   const raiz = useRef<HTMLElement>(null);
+  const carrossel = useRef<HTMLUListElement>(null);
+
+  /* O navegador restaura a posição de rolagem de qualquer scroller ao voltar
+     para a página — inclusive deste carrossel, que então abria no meio da lista,
+     escondendo os primeiros projetos. A hero tem que começar no primeiro nome. */
+  useEffect(() => {
+    const el = carrossel.current;
+    if (!el) return;
+    const aoTopo = () => { el.scrollLeft = 0; };
+    aoTopo();
+    const t = setTimeout(aoTopo, 120);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     const ocioso = (cb: () => void) =>
@@ -69,9 +82,14 @@ export function Hero() {
             scale: 1.06, duration: 20, ease: 'none', repeat: -1, yoyo: true,
           });
 
-          /* Saída da hero: a foto recua e escurece enquanto a seção seguinte sobe
-             por cima com a borda arredondada. É o que tira a emenda seca entre a
-             foto em tela cheia e o fundo claro. */
+          return () => { t.kill(); };
+        });
+
+        /* Saída da hero: a foto recua e escurece enquanto a seção seguinte sobe
+           por cima. SÓ NO DESKTOP — no mobile a foto não é uma camada de fundo em
+           tela cheia, é um bloco de 62svh com o conteúdo logo abaixo. Escurecê-la
+           ali não cria profundidade: apaga a foto na cara de quem está rolando. */
+        mm.add('(min-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
           const saida = gsap.timeline({
             scrollTrigger: {
               trigger: raiz.current,
@@ -83,8 +101,7 @@ export function Hero() {
           saida
             .to('[data-hero-camada]', { scale: 1.04, filter: 'brightness(0.72)', ease: 'none' }, 0)
             .to('[data-hero-conteudo]', { y: -40, opacity: 0.35, ease: 'none' }, 0);
-
-          return () => { t.kill(); saida.kill(); };
+          return () => { saida.kill(); };
         });
         limpar = () => mm.revert();
       }, raiz.current);
@@ -139,7 +156,7 @@ export function Hero() {
       <LuzDaAgua forca={0.11} />
 
       {/* camada 0 — a foto do projeto em destaque */}
-      <div data-hero-camada className="relative h-[52svh] w-full shrink-0 will-change-transform md:absolute md:inset-0 md:h-full">
+      <div data-hero-camada className="relative h-[62svh] w-full shrink-0 will-change-transform md:absolute md:inset-0 md:h-full">
         {projetos.map((p, i) => {
           if (!p.capa) return null;
           const primeira = comFoto[0]?.slug === p.slug;
@@ -158,13 +175,26 @@ export function Hero() {
             </div>
           );
         })}
+        {/* Dois véus, porque os dois layouts pedem coisas diferentes.
+            Desktop: a foto é o fundo de tudo e precisa recuar atrás do texto.
+            Mobile: a foto é um bloco e não tem texto por cima — só precisa do
+            escurecimento no topo, para a navbar. O véu do desktop aplicado ali
+            apagava metade da foto. */}
         <div
-          className="absolute inset-0"
+          className="absolute inset-0 hidden md:block"
           aria-hidden="true"
           style={{
             background:
               'linear-gradient(to right, rgba(13,26,20,.84) 0%, rgba(13,26,20,.40) 38%, rgba(13,26,20,.10) 62%, rgba(13,26,20,.52) 100%),' +
               'linear-gradient(to top, rgba(13,26,20,.88) 0%, rgba(13,26,20,.05) 46%, rgba(13,26,20,.20) 100%)',
+          }}
+        />
+        <div
+          className="absolute inset-0 md:hidden"
+          aria-hidden="true"
+          style={{
+            background:
+              'linear-gradient(to bottom, rgba(13,26,20,.58) 0%, rgba(13,26,20,.06) 26%, rgba(13,26,20,0) 70%, rgba(13,26,20,.30) 100%)',
           }}
         />
       </div>
@@ -183,6 +213,7 @@ export function Hero() {
         {/* índice de projetos */}
         <nav aria-label="Índice de projetos" className="order-2 md:order-1 md:max-w-[42%] md:pb-2">
           <ul
+            ref={carrossel}
             className="-mx-6 flex gap-6 overflow-x-auto px-6 pb-1 md:mx-0 md:flex-col md:gap-0 md:overflow-visible md:px-0"
             style={{ scrollSnapType: 'x proximity', scrollbarWidth: 'none' }}
           >

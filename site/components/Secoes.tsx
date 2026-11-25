@@ -26,18 +26,24 @@ export function Manifesto() {
     const frase = raiz.current?.querySelector('[data-manifesto]');
     if (!frase) return;
 
-    if (reduzido()) {
-      gsap.fromTo(frase, { opacity: 0 }, {
-        opacity: 1, duration: 0.3,
-        scrollTrigger: { trigger: frase, start: 'top 82%' },
+    /* A frase acende palavra por palavra só no desktop.
+       No celular a frase ocupa quase a tela inteira: com o scrub, metade dela
+       fica apagada enquanto a outra metade já acendeu, e isso lê como texto
+       quebrado, não como efeito. Lá a frase entra inteira, num fade. */
+    const telaPequena = window.matchMedia('(max-width: 767px)').matches;
+
+    if (reduzido() || telaPequena) {
+      gsap.fromTo(frase, { opacity: 0, y: 14 }, {
+        opacity: 1, y: 0, duration: reduzido() ? 0.3 : 0.8, ease: 'power3.out',
+        scrollTrigger: { trigger: frase, start: 'top 85%', once: true },
       });
     } else {
       const split = new SplitText(frase as HTMLElement, { type: 'words' });
       gsap.fromTo(split.words,
-        { opacity: 0.16 },
+        { opacity: 0.28 },
         {
           opacity: 1, duration: 0.5, stagger: 0.055, ease: 'power2.out',
-          scrollTrigger: { trigger: frase, start: 'top 78%', end: 'bottom 58%', scrub: 0.6 },
+          scrollTrigger: { trigger: frase, start: 'top 80%', end: 'bottom 65%', scrub: 0.6 },
         });
     }
 
